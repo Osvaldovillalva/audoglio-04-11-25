@@ -155,5 +155,17 @@ namespace Vista
             // Mostrar el formulario de reportes
             formReportes.Show();
         }
+        private void FormMenu_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            var usuarioSesion = UsuarioSesion.ObtenerInstancia();
+            if (!string.IsNullOrEmpty(usuarioSesion.Usuario))
+            {
+                var controladoraAuditoria = new ControladoraAuditoria();
+                controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Sistema", "Logout");
+            }
+
+            // Limpiar sesión
+            usuarioSesion.CerrarSesion();
+        }
     }
 }

@@ -54,21 +54,20 @@ namespace Vista
                 return;
             }
 
+            var controladoraAuditoria = new ControladoraAuditoria(); // instanciamos auditoría
+
             // Si el acceso es con admin y 123
             if (usuarioIngresado == "admin" && claveIngresada == "123")
             {
-                // Acción para administrador (sin consultar la base de datos)
                 ControladoraMultas controladoraMultas = new ControladoraMultas();
                 controladoraMultas.VerificarYActualizarEstadoSociosMultados();
 
-                // Guardar el usuario en la sesión
                 var usuarioSesion = UsuarioSesion.ObtenerInstancia();
                 usuarioSesion.Usuario = "admin";
                 usuarioSesion.Clave = "123";
-                usuarioSesion.Rol = "Admin";  // Rol de admin
+                usuarioSesion.Rol = "Admin";
                 usuarioSesion.Apellido = "Administrador";
 
-                // Asignar permisos para el admin
                 usuarioSesion.PuedeBorrarSocios = true;
                 usuarioSesion.PuedeModificarSocios = true;
                 usuarioSesion.PuedeBorrarLibros = true;
@@ -79,11 +78,13 @@ namespace Vista
                 usuarioSesion.PuedeVerRegistros = true;
                 usuarioSesion.PuedeGestionarUsuarios = true;
 
+                // Registrar auditoría de login
+                controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Sistema", "Login");
+
                 MostrarFormMenu(controladoraMultas);
             }
             else
             {
-                // Si no es admin, se valida contra la base de datos
                 using (var context = new SistemaBibliotecario())
                 {
                     var usuario = context.Usuarios.FirstOrDefault(u => u.Dni == usuarioIngresado);
@@ -92,12 +93,10 @@ namespace Vista
                     {
                         if (claveIngresada == usuario.Clave)
                         {
-                            // Cambiar estado dependiendo de si el usuario está activo o inactivo
                             estadoUsuario = usuario.Activo ? (IUsuarioState)new UsuarioActivoState() : new UsuarioInactivoState();
 
                             if (estadoUsuario.PuedeIniciarSesion(usuario))
                             {
-                                // Si la contraseña es correcta y el estado lo permite, guardar el usuario en la sesión
                                 var usuarioSesion = UsuarioSesion.ObtenerInstancia();
                                 usuarioSesion.Usuario = usuario.Nombre;
                                 usuarioSesion.Clave = usuario.Clave;
@@ -105,7 +104,6 @@ namespace Vista
                                 usuarioSesion.Rol = usuario.Rol;
                                 usuarioSesion.Apellido = usuario.Apellido;
 
-                                // Asignamos los permisos del usuario
                                 usuarioSesion.PuedeBorrarSocios = usuario.PuedeBorrarSocios;
                                 usuarioSesion.PuedeModificarSocios = usuario.PuedeModificarSocios;
                                 usuarioSesion.PuedeBorrarLibros = usuario.PuedeBorrarLibros;
@@ -118,6 +116,10 @@ namespace Vista
 
                                 ControladoraMultas controladoraMultas = new ControladoraMultas();
                                 controladoraMultas.VerificarYActualizarEstadoSociosMultados();
+
+                                // Registrar auditoría de login del usuario normal
+                                controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Sistema", "Login");
+
                                 MostrarFormMenu(controladoraMultas);
                             }
                             else
@@ -147,6 +149,7 @@ namespace Vista
 
 
 
+
         private void MostrarFormMenu(ControladoraMultas controladoraMultas)
         {
             FormMenu formMenu = new FormMenu(controladoraMultas);
@@ -158,7 +161,17 @@ namespace Vista
 
         private void buttonSalir_Click(object sender, EventArgs e)
         {
-            Application.Exit(); // Cierra la aplicación correctamente
+            var usuarioSesion = UsuarioSesion.ObtenerInstancia();
+
+            // Registrar auditoría de logout
+            ControladoraAuditoria controladoraAuditoria = new ControladoraAuditoria();
+            controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Sistema", "Logout");
+
+            // Cerrar sesión
+            usuarioSesion.CerrarSesion();
+
+            // Cerrar la aplicación o volver al login
+            Application.Exit();
         }
 
         private void FormLogin_Load(object sender, EventArgs e)

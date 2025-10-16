@@ -90,6 +90,7 @@
             dgvSocios.RowTemplate.Height = 25;
             dgvSocios.Size = new Size(906, 109);
             dgvSocios.TabIndex = 3;
+            dgvSocios.CellContentClick += dgvSocios_CellContentClick;
             // 
             // dgvCuotasMensuales
             // 

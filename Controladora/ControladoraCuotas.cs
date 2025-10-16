@@ -208,6 +208,27 @@ namespace Controladora
             return valorCuota.HasValue && valorCuota.Value > 0;
         }
 
+        public void ActualizarEstadoSocioTrasPago(int socioId)
+        {
+            using (var context = new SistemaBibliotecario())
+            {
+                var socio = context.Socios.FirstOrDefault(s => s.SocioId == socioId);
+                if (socio == null) return;
+
+                var cuotasPendientes = ObtenerCuotasPendientes(socioId);
+
+                // Si no hay cuotas pendientes, habilitamos al socio
+                socio.Habilitado = !cuotasPendientes.Any();
+
+                context.SaveChanges();
+            }
+        }
+
+
+
+
+
+
         public void VerificarYDeshabilitarSociosConCuotasPendientes()
         {
             using (var context = new SistemaBibliotecario())
@@ -251,7 +272,7 @@ namespace Controladora
             decimal recargoRedondeado = Math.Ceiling(recargo / 10) * 10; // Redondear hacia arriba a múltiplos de 10
             return recargoRedondeado;
         }
-        public bool RegistrarPago(int socioId, int cuotaMensualId, DateTime fechaPago, decimal montoCobrado)
+        public bool RegistrarPago(int socioId, int cuotaMensualId, DateTime fechaPago, decimal montoCobrado, string usuarioActual)
         {
             try
             {
@@ -278,6 +299,11 @@ namespace Controladora
                 contexto.DetallesPagos.Add(nuevoDetallePago);
                 contexto.SaveChanges();
 
+                // Auditoría
+                var controladoraAuditoria = new ControladoraAuditoria();
+                string valorNuevo = $"SocioId: {socioId}, CuotaMensualId: {cuotaMensualId}, FechaPago: {fechaPago}, MontoCobrado: {montoCobrado}";
+                controladoraAuditoria.Registrar(usuarioActual, "DetallePago", "Pago", null, valorNuevo);
+
                 Console.WriteLine("Pago registrado correctamente.");
                 return true;
             }
@@ -287,6 +313,8 @@ namespace Controladora
                 return false;
             }
         }
+
+
 
         public List<(string Apellido, int Dni, string Mes, int Año)> ObtenerDetallesPagosConInformacion()
         {
