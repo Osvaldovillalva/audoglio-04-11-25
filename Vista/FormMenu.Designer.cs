@@ -42,6 +42,7 @@
             buttonGestionUsuarios = new Button();
             buttonmiperfil = new Button();
             button1 = new Button();
+            buttonAuditoria = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -229,12 +230,23 @@
             button1.UseVisualStyleBackColor = true;
             button1.Click += button1_Click_1;
             // 
+            // buttonAuditoria
+            // 
+            buttonAuditoria.Location = new Point(467, 205);
+            buttonAuditoria.Name = "buttonAuditoria";
+            buttonAuditoria.Size = new Size(94, 52);
+            buttonAuditoria.TabIndex = 9;
+            buttonAuditoria.Text = "Auditoria";
+            buttonAuditoria.UseVisualStyleBackColor = true;
+            buttonAuditoria.Click += buttonAuditoria_Click;
+            // 
             // FormMenu
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             ClientSize = new Size(930, 500);
+            Controls.Add(buttonAuditoria);
             Controls.Add(button1);
             Controls.Add(buttonmiperfil);
             Controls.Add(buttonGestionUsuarios);
@@ -270,5 +282,6 @@
         private Button buttonGestionUsuarios;
         private Button buttonmiperfil;
         private Button button1;
+        private Button buttonAuditoria;
     }
 }

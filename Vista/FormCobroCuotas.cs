@@ -145,7 +145,7 @@ namespace Vista
                 // Verificar las selecciones antes de proceder
                 if (!ValidarSeleccionSocioCuota())
                 {
-                    return; // Si no se cumplen las validaciones, salir del método
+                    return; // Salir si no hay selección
                 }
 
                 // Mostrar los detalles del carrito de cuotas pendientes
@@ -164,8 +164,7 @@ namespace Vista
                     if (controladoraCuotas.CuotaEstaVencida(cuota))
                     {
                         cuotasVencidas.Add(cuota);
-                        decimal recargo = controladoraCuotas.CalcularRecargo(cuota);
-                        totalRecargo += recargo;
+                        totalRecargo += controladoraCuotas.CalcularRecargo(cuota);
                     }
                 }
 
@@ -182,29 +181,68 @@ namespace Vista
                     MessageBox.Show(sb.ToString(), "Cuotas Vencidas", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
-                // Calcular el total a pagar incluyendo el recargo
+                // Calcular el total a pagar incluyendo recargos
                 decimal totalAPagar = totalCuotas + totalRecargo;
 
                 // Confirmar si desea realizar el pago
-                DialogResult confirmacion = MessageBox.Show($"¿Desea realizar el pago? Total a pagar: {totalAPagar:C}", "Confirmación de Pago", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult confirmacion = MessageBox.Show(
+                    $"¿Desea realizar el pago? Total a pagar: {totalAPagar:C}",
+                    "Confirmación de Pago",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question
+                );
 
                 if (confirmacion == DialogResult.Yes)
                 {
-                    // Registrar el pago en la base de datos
-                    foreach (CuotaMensual cuota in carritoCuotasPendientes.CuotasSeleccionadas)
+                    try
                     {
-                        int socioIdSeleccionado = ObtenerSocioSeleccionado(); // Debes implementar esta lógica según tu aplicación
-                        decimal montoCobrado = (cuota.Valor ?? 0m) + controladoraCuotas.CalcularRecargo(cuota); // Sumar el recargo al valor original
-                        controladoraCuotas.RegistrarPago(socioIdSeleccionado, cuota.CuotaMensualId, DateTime.Today, montoCobrado);
-                    }
+                        // Obtener el usuario actual de la sesión
+                        var usuarioSesion = UsuarioSesion.ObtenerInstancia();
+                        var auditoria = new ControladoraAuditoria();
 
-                    // Mostrar mensaje de éxito
-                    MessageBox.Show($"¡Pago generado correctamente! Total a pagar: {totalAPagar:C}", "Generación de Pago", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        // Registrar el pago y la auditoría
+                        foreach (CuotaMensual cuota in carritoCuotasPendientes.CuotasSeleccionadas)
+                        {
+                            int socioIdSeleccionado = ObtenerSocioSeleccionado();
+                            decimal montoCobrado = (cuota.Valor ?? 0m) + controladoraCuotas.CalcularRecargo(cuota);
+
+                            // Registrar pago en base de datos
+                            controladoraCuotas.RegistrarPago(
+                                socioIdSeleccionado,
+                                cuota.CuotaMensualId,
+                                DateTime.Today,
+                                montoCobrado,
+                                usuarioSesion.Usuario
+                            );
+
+                            // Registrar auditoría del pago
+                            auditoria.Registrar(
+                                usuarioSesion.Usuario,
+                                "CuotaMensual",
+                                "Pago",
+                                valorAnterior: null,
+                                valorNuevo: $"CuotaId: {cuota.CuotaMensualId}, SocioId: {socioIdSeleccionado}, Monto: {montoCobrado:C}"
+                            );
+                        }
+
+                        int socioIdActual = ObtenerSocioSeleccionado();
+                        controladoraCuotas.ActualizarEstadoSocioTrasPago(socioIdActual);
+
+                        // Limpiar carrito y refrescar UI
+                        carritoCuotasPendientes.CuotasSeleccionadas.Clear();
+                        RefrescarListaCuotasPendientes(socioIdActual, dgvCuotasMensuales);
+
+
+                        MessageBox.Show("Pago registrado correctamente y auditoría guardada.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ocurrió un error al registrar el pago: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
                 else
                 {
-                    // El usuario decidió no realizar el pago
-                    MessageBox.Show("Operación cancelada por el usuario.", "Cancelado", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show("El pago fue cancelado.", "Información", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
             catch (Exception ex)
@@ -212,6 +250,20 @@ namespace Vista
                 MessageBox.Show($"Error al generar el pago: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
+        private void RefrescarListaCuotasPendientes(int socioId, DataGridView dgv)
+        {
+            // Obtener las cuotas pendientes del socio
+            var cuotasPendientes = controladoraCuotas.ObtenerCuotasPendientes(socioId);
+
+            // Limpiar el DataGridView
+            dgv.DataSource = null;
+
+            // Asignar la nueva lista
+            dgv.DataSource = cuotasPendientes;
+        }
+
 
 
 
@@ -287,6 +339,11 @@ namespace Vista
         }
 
         private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void dgvSocios_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }
