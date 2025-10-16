@@ -19,7 +19,7 @@ namespace Modelo
 
 
 
-
+        public DbSet<Auditoria> Auditorias { get; set; }
         public DbSet<Libro> Libros { get; set; }
         public DbSet<Prestamo> Prestamos { get; set; }
         public DbSet<Socio> Socios { get; set; }
@@ -47,9 +47,10 @@ namespace Modelo
         
             protected override void OnModelCreating(ModelBuilder modelBuilder)
                                                  {
+                                            modelBuilder.Entity<Auditoria>()
+                                         .HasKey(a => a.AuditoriaId);
 
-
-                                        modelBuilder.Entity<Prestamo>()
+                                             modelBuilder.Entity<Prestamo>()
                             .HasKey(p => p.PrestamoId); // Clave primaria de Prestamo
 
                                         // Configuración de la relación entre Prestamo y Libro
@@ -142,7 +143,9 @@ namespace Modelo
             modelBuilder.Entity<Multa>().HasData(
                                                 new Multa { MultaId=1,SocioId=1,FechaInicio=DateTime.Now.AddDays(-3),FechaFinalizacion=DateTime.Now.AddDays(-3),Pagada=true }
                                             );
-
+            modelBuilder.Entity<CuotaMensual>()
+    .Property(c => c.Valor)
+    .HasPrecision(18, 2);
 
             modelBuilder.Entity<CuotaMensual>().HasData(
      new CuotaMensual { CuotaMensualId = 1,Año=2024,NumeroMes=1, Mes = "Enero", Valor = 2000.00m },
@@ -153,7 +156,9 @@ namespace Modelo
      new CuotaMensual { CuotaMensualId = 6, Año = 2024, NumeroMes = 6, Mes = "Junio", Valor = 2000m }
     
  );
-
+            modelBuilder.Entity<DetallePago>()
+    .Property(d => d.MontoCobrado)
+    .HasPrecision(18, 2);
             modelBuilder.Entity<DetallePago>().HasData(
                 new DetallePago { DetallePagoId = 1,SocioId=1, CuotaMensualId = 1, MontoCobrado = 2000.00m, FechaPago = DateTime.Now },
                 new DetallePago { DetallePagoId = 2,SocioId=2, CuotaMensualId = 2, MontoCobrado = 2000.00m, FechaPago = DateTime.Now },

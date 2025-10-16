@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Modelo;
 
@@ -11,9 +12,11 @@ using Modelo;
 namespace Modelo.Migrations
 {
     [DbContext(typeof(SistemaBibliotecario))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20251016183733_AjusteDecimalValor")]
+    partial class AjusteDecimalValor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -178,7 +181,6 @@ namespace Modelo.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<decimal>("MontoCobrado")
-                        .HasPrecision(18, 2)
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("SocioId")
@@ -197,7 +199,7 @@ namespace Modelo.Migrations
                         {
                             DetallePagoId = 1,
                             CuotaMensualId = 1,
-                            FechaPago = new DateTime(2025, 10, 16, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(9054),
+                            FechaPago = new DateTime(2025, 10, 16, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8928),
                             MontoCobrado = 2000.00m,
                             SocioId = 1
                         },
@@ -205,7 +207,7 @@ namespace Modelo.Migrations
                         {
                             DetallePagoId = 2,
                             CuotaMensualId = 2,
-                            FechaPago = new DateTime(2025, 10, 16, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(9058),
+                            FechaPago = new DateTime(2025, 10, 16, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8931),
                             MontoCobrado = 2000.00m,
                             SocioId = 2
                         },
@@ -213,7 +215,7 @@ namespace Modelo.Migrations
                         {
                             DetallePagoId = 3,
                             CuotaMensualId = 3,
-                            FechaPago = new DateTime(2025, 10, 16, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(9059),
+                            FechaPago = new DateTime(2025, 10, 16, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8933),
                             MontoCobrado = 2000.00m,
                             SocioId = 3
                         });
@@ -243,19 +245,19 @@ namespace Modelo.Migrations
                         new
                         {
                             DevolucionId = 1,
-                            FechaDevolucion = new DateTime(2025, 10, 13, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8600),
+                            FechaDevolucion = new DateTime(2025, 10, 13, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8629),
                             PrestamoId = 1
                         },
                         new
                         {
                             DevolucionId = 2,
-                            FechaDevolucion = new DateTime(2025, 10, 14, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8603),
+                            FechaDevolucion = new DateTime(2025, 10, 14, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8631),
                             PrestamoId = 2
                         },
                         new
                         {
                             DevolucionId = 3,
-                            FechaDevolucion = new DateTime(2025, 10, 15, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8604),
+                            FechaDevolucion = new DateTime(2025, 10, 15, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8632),
                             PrestamoId = 3
                         });
                 });
@@ -344,8 +346,8 @@ namespace Modelo.Migrations
                         new
                         {
                             MultaId = 1,
-                            FechaFinalizacion = new DateTime(2025, 10, 13, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8649),
-                            FechaInicio = new DateTime(2025, 10, 13, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8649),
+                            FechaFinalizacion = new DateTime(2025, 10, 13, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8671),
+                            FechaInicio = new DateTime(2025, 10, 13, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8670),
                             Pagada = true,
                             SocioId = 1
                         });
@@ -391,8 +393,8 @@ namespace Modelo.Migrations
                             PrestamoId = 1,
                             CarritoId = 1,
                             EnPrestamo = true,
-                            FechaDevolucion = new DateTime(2025, 10, 6, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8575),
-                            FechaPrestamo = new DateTime(2025, 10, 6, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8558),
+                            FechaDevolucion = new DateTime(2025, 10, 6, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8600),
+                            FechaPrestamo = new DateTime(2025, 10, 6, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8585),
                             LibroId = 1,
                             SocioId = 1
                         },
@@ -401,8 +403,8 @@ namespace Modelo.Migrations
                             PrestamoId = 2,
                             CarritoId = 2,
                             EnPrestamo = true,
-                            FechaDevolucion = new DateTime(2025, 10, 11, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8578),
-                            FechaPrestamo = new DateTime(2025, 10, 11, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8578),
+                            FechaDevolucion = new DateTime(2025, 10, 11, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8602),
+                            FechaPrestamo = new DateTime(2025, 10, 11, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8602),
                             LibroId = 2,
                             SocioId = 2
                         },
@@ -411,8 +413,8 @@ namespace Modelo.Migrations
                             PrestamoId = 3,
                             CarritoId = 3,
                             EnPrestamo = true,
-                            FechaDevolucion = new DateTime(2025, 10, 13, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8581),
-                            FechaPrestamo = new DateTime(2025, 10, 13, 15, 39, 36, 30, DateTimeKind.Local).AddTicks(8580),
+                            FechaDevolucion = new DateTime(2025, 10, 13, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8605),
+                            FechaPrestamo = new DateTime(2025, 10, 13, 15, 37, 32, 939, DateTimeKind.Local).AddTicks(8604),
                             LibroId = 3,
                             SocioId = 3
                         });
