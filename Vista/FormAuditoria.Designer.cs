@@ -42,18 +42,18 @@
             // 
             // btnFiltrar
             // 
-            btnFiltrar.Location = new Point(103, 100);
+            btnFiltrar.Location = new Point(77, 224);
             btnFiltrar.Name = "btnFiltrar";
-            btnFiltrar.Size = new Size(236, 99);
+            btnFiltrar.Size = new Size(166, 75);
             btnFiltrar.TabIndex = 0;
             btnFiltrar.Text = "Aplicar Filtro";
             btnFiltrar.UseVisualStyleBackColor = true;
             // 
             // btnActualizar
             // 
-            btnActualizar.Location = new Point(180, 276);
+            btnActualizar.Location = new Point(288, 221);
             btnActualizar.Name = "btnActualizar";
-            btnActualizar.Size = new Size(231, 102);
+            btnActualizar.Size = new Size(171, 78);
             btnActualizar.TabIndex = 1;
             btnActualizar.Text = "Actualizar";
             btnActualizar.UseVisualStyleBackColor = true;
@@ -61,7 +61,7 @@
             // lblFiltros
             // 
             lblFiltros.AutoSize = true;
-            lblFiltros.Location = new Point(635, 159);
+            lblFiltros.Location = new Point(42, 69);
             lblFiltros.Name = "lblFiltros";
             lblFiltros.Size = new Size(39, 15);
             lblFiltros.TabIndex = 2;
@@ -70,21 +70,21 @@
             // cmbEntidad
             // 
             cmbEntidad.FormattingEnabled = true;
-            cmbEntidad.Location = new Point(932, 336);
+            cmbEntidad.Location = new Point(267, 161);
             cmbEntidad.Name = "cmbEntidad";
             cmbEntidad.Size = new Size(121, 23);
             cmbEntidad.TabIndex = 3;
             // 
             // dtpDesde
             // 
-            dtpDesde.Location = new Point(878, 128);
+            dtpDesde.Location = new Point(42, 119);
             dtpDesde.Name = "dtpDesde";
             dtpDesde.Size = new Size(346, 23);
             dtpDesde.TabIndex = 4;
             // 
             // txtUsuario
             // 
-            txtUsuario.Location = new Point(646, 253);
+            txtUsuario.Location = new Point(77, 161);
             txtUsuario.Name = "txtUsuario";
             txtUsuario.Size = new Size(100, 23);
             txtUsuario.TabIndex = 5;
@@ -92,17 +92,17 @@
             // dgvAuditoria
             // 
             dgvAuditoria.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dgvAuditoria.Location = new Point(290, 407);
+            dgvAuditoria.Location = new Point(32, 305);
             dgvAuditoria.Name = "dgvAuditoria";
             dgvAuditoria.RowTemplate.Height = 25;
-            dgvAuditoria.Size = new Size(240, 150);
+            dgvAuditoria.Size = new Size(844, 329);
             dgvAuditoria.TabIndex = 6;
             // 
             // dtpHasta
             // 
-            dtpHasta.Location = new Point(1133, 218);
+            dtpHasta.Location = new Point(464, 119);
             dtpHasta.Name = "dtpHasta";
-            dtpHasta.Size = new Size(200, 23);
+            dtpHasta.Size = new Size(309, 23);
             dtpHasta.TabIndex = 7;
             // 
             // BtnVolver
