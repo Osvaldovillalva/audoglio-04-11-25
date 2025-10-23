@@ -167,7 +167,7 @@ namespace Vista
             // Limpiar sesión
             usuarioSesion.CerrarSesion();
         }
-<<<<<<< HEAD
+
 
         private void buttonAuditoria_Click(object sender, EventArgs e)
         {
@@ -176,7 +176,6 @@ namespace Vista
                 formAuditoria.ShowDialog();
             }
         }
-=======
->>>>>>> 6cc461e81a433d209e0a9fad6d45f37aa7e28659
+
     }
 }
