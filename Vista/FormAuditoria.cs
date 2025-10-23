@@ -21,7 +21,6 @@ namespace Vista
         private void FormAuditoria_Load(object sender, EventArgs e)
         {
             InicializarFiltros();
-            CargarRegistrosAuditoria();
             dgvAuditoria.AutoGenerateColumns = false;
             dgvAuditoria.Columns.Clear();
 
@@ -33,7 +32,10 @@ namespace Vista
             dgvAuditoria.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Valor Nuevo", DataPropertyName = "ValorNuevo" });
             dgvAuditoria.Columns.Add(new DataGridViewTextBoxColumn { HeaderText = "Fecha y Hora", DataPropertyName = "FechaHora" });
 
+            // 🔹 Cargar los registros de auditoría
+            CargarRegistrosAuditoria();
         }
+
         private void CargarRegistrosAuditoria()
         {
             using (var context = new SistemaBibliotecario())
