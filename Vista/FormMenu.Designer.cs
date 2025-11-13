@@ -43,6 +43,7 @@
             buttonmiperfil = new Button();
             button1 = new Button();
             buttonAuditoria = new Button();
+            buttonbackup = new Button();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             SuspendLayout();
             // 
@@ -242,12 +243,25 @@
             buttonAuditoria.UseVisualStyleBackColor = true;
             buttonAuditoria.Click += buttonAuditoria_Click;
             // 
+            // buttonbackup
+            // 
+            buttonbackup.FlatStyle = FlatStyle.Popup;
+            buttonbackup.ForeColor = SystemColors.ButtonHighlight;
+            buttonbackup.Location = new Point(441, 315);
+            buttonbackup.Name = "buttonbackup";
+            buttonbackup.Size = new Size(103, 54);
+            buttonbackup.TabIndex = 10;
+            buttonbackup.Text = "Generar Back Up";
+            buttonbackup.UseVisualStyleBackColor = true;
+            buttonbackup.Click += buttonbackup_Click;
+            // 
             // FormMenu
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.Black;
             ClientSize = new Size(930, 500);
+            Controls.Add(buttonbackup);
             Controls.Add(buttonAuditoria);
             Controls.Add(button1);
             Controls.Add(buttonmiperfil);
@@ -285,5 +299,6 @@
         private Button buttonmiperfil;
         private Button button1;
         private Button buttonAuditoria;
+        private Button buttonbackup;
     }
 }

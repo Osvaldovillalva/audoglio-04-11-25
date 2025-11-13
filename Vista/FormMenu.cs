@@ -175,5 +175,13 @@ namespace Vista
                 formAuditoria.ShowDialog();
             }
         }
+
+        private void buttonbackup_Click(object sender, EventArgs e)
+        {
+            using (FormBackup fb = new FormBackup())
+            {
+                fb.ShowDialog();
+            }
+        }
     }
 }

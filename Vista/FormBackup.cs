@@ -16,5 +16,19 @@ namespace Vista
         {
             InitializeComponent();
         }
+
+        private void buttonExaminar_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new FolderBrowserDialog())
+            {
+                dialog.Description = "Seleccione la carpeta donde guardar el backup";
+                dialog.ShowNewFolderButton = true;  // permite crear carpetas nuevas
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    textBoxUbicacionbackUp.Text = dialog.SelectedPath;
+                }
+            }
+        }
     }
 }
