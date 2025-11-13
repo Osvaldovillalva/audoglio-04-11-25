@@ -31,6 +31,7 @@
             label1 = new Label();
             textBoxUbicacionbackUp = new TextBox();
             buttonExaminar = new Button();
+            buttonCancelar = new Button();
             SuspendLayout();
             // 
             // label1
@@ -60,11 +61,22 @@
             buttonExaminar.UseVisualStyleBackColor = true;
             buttonExaminar.Click += buttonExaminar_Click;
             // 
+            // buttonCancelar
+            // 
+            buttonCancelar.Location = new Point(33, 138);
+            buttonCancelar.Name = "buttonCancelar";
+            buttonCancelar.Size = new Size(175, 73);
+            buttonCancelar.TabIndex = 3;
+            buttonCancelar.Text = "Cancelar";
+            buttonCancelar.UseVisualStyleBackColor = true;
+            buttonCancelar.Click += buttonCancelar_Click;
+            // 
             // FormBackup
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 223);
+            Controls.Add(buttonCancelar);
             Controls.Add(buttonExaminar);
             Controls.Add(textBoxUbicacionbackUp);
             Controls.Add(label1);
@@ -79,5 +91,6 @@
         private Label label1;
         private TextBox textBoxUbicacionbackUp;
         private Button buttonExaminar;
+        private Button buttonCancelar;
     }
 }
