@@ -232,6 +232,8 @@
             // 
             // buttonAuditoria
             // 
+            buttonAuditoria.FlatStyle = FlatStyle.Popup;
+            buttonAuditoria.ForeColor = SystemColors.ButtonFace;
             buttonAuditoria.Location = new Point(467, 205);
             buttonAuditoria.Name = "buttonAuditoria";
             buttonAuditoria.Size = new Size(94, 52);

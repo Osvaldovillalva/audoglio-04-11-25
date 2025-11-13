@@ -158,39 +158,32 @@ namespace Modelo
                     Contador = 0
                 }
             );
+            modelBuilder.Entity<Auditoria>(entity =>
+            {
+                entity.HasKey(a => a.AuditoriaId);
+                entity.Property(a => a.Usuario)
+                      .IsRequired()
+                      .HasMaxLength(100);
+                entity.Property(a => a.Accion)
+                      .IsRequired()
+                      .HasMaxLength(100);
+                entity.Property(a => a.Detalle)
+                      .HasMaxLength(500);
+                entity.Property(a => a.FechaHora)
+                      .IsRequired();
+            });
 
+            // 🔹 Semilla inicial de ejemplo
             modelBuilder.Entity<Auditoria>().HasData(
-     new Auditoria
-     {
-         AuditoriaId = 1,
-         Usuario = "Javier Villalva",
-         Entidad = "Usuario",
-         Accion = "Login",
-         ValorAnterior = "",
-         ValorNuevo = "Inicio de sesión exitoso",
-         FechaHora = DateTime.Now.AddDays(-2)
-     },
-     new Auditoria
-     {
-         AuditoriaId = 2,
-         Usuario = "Carlos Pérez",
-         Entidad = "Prestamo",
-         Accion = "Alta",
-         ValorAnterior = "",
-         ValorNuevo = "Prestamo del libro 'El principito' a María López",
-         FechaHora = DateTime.Now.AddDays(-1)
-     },
-     new Auditoria
-     {
-         AuditoriaId = 3,
-         Usuario = "Javier Villalva",
-         Entidad = "Socio",
-         Accion = "Modificación",
-         ValorAnterior = "Socio habilitado = false",
-         ValorNuevo = "Socio habilitado = true",
-         FechaHora = DateTime.Now
-     }
- );
+                new Auditoria
+                {
+                    AuditoriaId = 1,
+                    Usuario = "Sistema",
+                    Accion = "Inicialización",
+                    FechaHora = DateTime.Now,
+                    Detalle = "Creación inicial de la base de datos y prueba de auditoría"
+                }
+            );
 
         }
     }

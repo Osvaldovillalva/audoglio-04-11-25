@@ -219,9 +219,9 @@ namespace Vista
                             auditoria.Registrar(
                                 usuarioSesion.Usuario,
                                 "CuotaMensual",
-                                "Pago",
-                                valorAnterior: null,
-                                valorNuevo: $"CuotaId: {cuota.CuotaMensualId}, SocioId: {socioIdSeleccionado}, Monto: {montoCobrado:C}"
+                                "Pago"
+                               
+                                
                             );
                         }
 

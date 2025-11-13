@@ -299,12 +299,13 @@ namespace Controladora
                 contexto.DetallesPagos.Add(nuevoDetallePago);
                 contexto.SaveChanges();
 
-                // Auditoría
+                // ✅ Registrar en la auditoría con detalle del importe cobrado
                 var controladoraAuditoria = new ControladoraAuditoria();
-                string valorNuevo = $"SocioId: {socioId}, CuotaMensualId: {cuotaMensualId}, FechaPago: {fechaPago}, MontoCobrado: {montoCobrado}";
-                controladoraAuditoria.Registrar(usuarioActual, "DetallePago", "Pago", null, valorNuevo);
+                string detalleAuditoria = $"Pago registrado por el socio '{socio.Apellido}' (DNI {socio.Dni}) - " +
+                                          $"Cuota: {cuota.Mes} {cuota.Año}, Importe: ${montoCobrado:F2}";
 
-                Console.WriteLine("Pago registrado correctamente.");
+                controladoraAuditoria.Registrar(usuarioActual, "CuotaMensual", detalleAuditoria);
+
                 return true;
             }
             catch (Exception ex)

@@ -84,13 +84,17 @@ namespace Vista
 
         private void buttonCerrarSesion_Click(object sender, EventArgs e)
         {
-            // Restablecer los datos de la sesión
             var usuarioSesion = UsuarioSesion.ObtenerInstancia();
-            usuarioSesion.Usuario = null;
-            usuarioSesion.Clave = null;
-            usuarioSesion.Dni = null;
-            usuarioSesion.Rol = null;
-            usuarioSesion.Apellido = null;
+
+            // Registrar auditoría de logout solo si había sesión activa
+            if (!string.IsNullOrEmpty(usuarioSesion.Usuario))
+            {
+                var controladoraAuditoria = new ControladoraAuditoria();
+                controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Logout", "Cierre de sesión del usuario");
+            }
+
+            // Restablecer los datos de la sesión
+            usuarioSesion.CerrarSesion();
 
             // Mostrar nuevamente el formulario de inicio de sesión
             FormLogin formLogin = new FormLogin();

@@ -168,7 +168,6 @@ namespace Vista
             usuarioSesion.CerrarSesion();
         }
 
-
         private void buttonAuditoria_Click(object sender, EventArgs e)
         {
             using (FormAuditoria formAuditoria = new FormAuditoria())
@@ -176,6 +175,5 @@ namespace Vista
                 formAuditoria.ShowDialog();
             }
         }
-
     }
 }

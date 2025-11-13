@@ -165,7 +165,7 @@ namespace Vista
             pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBox1.TabIndex = 8;
             pictureBox1.TabStop = false;
-            pictureBox1.Click += pictureBox1_Click;
+          
             // 
             // buttonolvidecontraseña
             // 
@@ -198,7 +198,7 @@ namespace Vista
             FormBorderStyle = FormBorderStyle.None;
             Name = "FormLogin";
             Text = "Login";
-            Load += FormLogin_Load;
+        
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);
             PerformLayout();

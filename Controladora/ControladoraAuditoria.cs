@@ -10,42 +10,20 @@ namespace Controladora
 {
     public class ControladoraAuditoria
     {
-        private readonly SistemaBibliotecario _contexto;
-
-        public ControladoraAuditoria()
+        public void Registrar(string usuario, string accion, string detalle = null)
         {
-            _contexto = new SistemaBibliotecario();
-        }
-
-        /// <summary>
-        /// Registra un evento de auditoría
-        /// </summary>
-        /// <param name="usuario">Nombre del bibliotecario</param>
-        /// <param name="entidad">Entidad afectada (DetallePago, Sistema, etc.)</param>
-        /// <param name="accion">Tipo de acción (Alta, Modificación, Eliminación, Login, Logout)</param>
-        /// <param name="valorAnterior">Datos previos (opcional)</param>
-        /// <param name="valorNuevo">Datos nuevos (opcional)</param>
-        public void Registrar(string usuario, string entidad, string accion, string valorAnterior = null, string valorNuevo = null)
-        {
-            try
+            using (var context = new SistemaBibliotecario())
             {
                 var registro = new Auditoria
                 {
                     Usuario = usuario,
-                    Entidad = entidad,
                     Accion = accion,
-                    FechaHora = DateTime.Now,
-                    ValorAnterior = valorAnterior,
-                    ValorNuevo = valorNuevo
+                    Detalle = detalle,
+                    FechaHora = DateTime.Now
                 };
 
-                _contexto.Auditorias.Add(registro);
-                _contexto.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                // Opcional: manejar errores de auditoría, log local, etc.
-                Console.WriteLine("Error al registrar auditoría: " + ex.Message);
+                context.Auditorias.Add(registro);
+                context.SaveChanges();
             }
         }
     }

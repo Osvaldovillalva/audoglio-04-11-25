@@ -1,4 +1,4 @@
-using Controladora;
+Ôªøusing Controladora;
 using Entidades;
 using Modelo;
 using System;
@@ -11,21 +11,25 @@ namespace Vista
     public partial class FormLogin : Form
     {
         private IUsuarioState estadoUsuario;
+        private readonly ControladoraAuditoria controladoraAuditoria; // ‚úÖ la dejamos como propiedad del form
+
         public FormLogin()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.Manual;
-            // Establecer la ubicaciÛn del formulario en la pantalla (por ejemplo, en las coordenadas 100, 100)
             this.Location = new Point(100, 100);
+
+            controladoraAuditoria = new ControladoraAuditoria(); // ‚úÖ inicializamos una vez
+
             ConfigurarEventosMouseBotones(this);
         }
+
         private void ConfigurarEventosMouseBotones(Control parent)
         {
             foreach (Control control in parent.Controls)
             {
                 if (control is Button button)
                 {
-                    // Asociar eventos MouseEnter y MouseLeave al botÛn
                     button.MouseEnter += (sender, e) => CambiarColorBoton(button, Color.MediumVioletRed);
                     button.MouseLeave += (sender, e) => CambiarColorBoton(button, Color.Black);
                 }
@@ -39,24 +43,22 @@ namespace Vista
 
         private void buttonCancelar_Click(object sender, EventArgs e)
         {
-            textBoxContraseÒa.Clear();
+            textBoxContrase√±a.Clear();
             textBoxUsuario.Clear();
         }
 
         private void buttonIngresar_Click(object sender, EventArgs e)
         {
             string usuarioIngresado = textBoxUsuario.Text.Trim();
-            string claveIngresada = textBoxContraseÒa.Text.Trim();
+            string claveIngresada = textBoxContrase√±a.Text.Trim();
 
             if (string.IsNullOrEmpty(usuarioIngresado) || string.IsNullOrEmpty(claveIngresada))
             {
-                MessageBox.Show("Por favor, complete todos los campos.", "ValidaciÛn", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Por favor, complete todos los campos.", "Validaci√≥n", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            var controladoraAuditoria = new ControladoraAuditoria(); // instanciamos auditorÌa
-
-            // Si el acceso es con admin y 123
+            // --- üîπ LOGIN ADMINISTRADOR ---
             if (usuarioIngresado == "admin" && claveIngresada == "123")
             {
                 ControladoraMultas controladoraMultas = new ControladoraMultas();
@@ -78,120 +80,98 @@ namespace Vista
                 usuarioSesion.PuedeVerRegistros = true;
                 usuarioSesion.PuedeGestionarUsuarios = true;
 
-                // Registrar auditorÌa de login
-                controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Sistema", "Login");
+                // ‚úÖ Auditor√≠a
+                controladoraAuditoria.Registrar("admin", "Login", "Inicio de sesi√≥n del administrador");
+
+                MostrarFormMenu(controladoraMultas);
+                return;
+            }
+
+            // --- üîπ LOGIN USUARIO NORMAL ---
+            using (var context = new SistemaBibliotecario())
+            {
+                var usuario = context.Usuarios.FirstOrDefault(u => u.Dni == usuarioIngresado);
+
+                if (usuario == null)
+                {
+                    MessageBox.Show("El nombre de usuario no existe.");
+                    textBoxUsuario.Clear();
+                    textBoxContrase√±a.Clear();
+                    return;
+                }
+
+                if (claveIngresada != usuario.Clave)
+                {
+                    MessageBox.Show("La contrase√±a es incorrecta.");
+                    textBoxContrase√±a.Clear();
+                    return;
+                }
+
+                estadoUsuario = usuario.Activo ? (IUsuarioState)new UsuarioActivoState() : new UsuarioInactivoState();
+
+                if (!estadoUsuario.PuedeIniciarSesion(usuario))
+                {
+                    MessageBox.Show("El usuario est√° inactivo, no puede iniciar sesi√≥n.");
+                    textBoxUsuario.Clear();
+                    textBoxContrase√±a.Clear();
+                    return;
+                }
+
+                // ‚úÖ Crear sesi√≥n del usuario
+                var usuarioSesion = UsuarioSesion.ObtenerInstancia();
+                usuarioSesion.Usuario = usuario.Nombre;
+                usuarioSesion.Clave = usuario.Clave;
+                usuarioSesion.Dni = usuario.Dni;
+                usuarioSesion.Rol = usuario.Rol;
+                usuarioSesion.Apellido = usuario.Apellido;
+
+                usuarioSesion.PuedeBorrarSocios = usuario.PuedeBorrarSocios;
+                usuarioSesion.PuedeModificarSocios = usuario.PuedeModificarSocios;
+                usuarioSesion.PuedeBorrarLibros = usuario.PuedeBorrarLibros;
+                usuarioSesion.PuedeModificarLibros = usuario.PuedeModificarLibros;
+                usuarioSesion.PuedeModificarValorCuota = usuario.PuedeModificarValorCuota;
+                usuarioSesion.PuedeCobrarCuotas = usuario.PuedeCobrarCuotas;
+                usuarioSesion.PuedeCambiarReglas = usuario.PuedeCambiarReglas;
+                usuarioSesion.PuedeVerRegistros = usuario.PuedeVerRegistros;
+                usuarioSesion.PuedeGestionarUsuarios = usuario.PuedeGestionarUsuarios;
+
+                ControladoraMultas controladoraMultas = new ControladoraMultas();
+                controladoraMultas.VerificarYActualizarEstadoSociosMultados();
+
+                // ‚úÖ Auditor√≠a
+                controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Login", "Inicio de sesi√≥n exitoso");
 
                 MostrarFormMenu(controladoraMultas);
             }
-            else
-            {
-                using (var context = new SistemaBibliotecario())
-                {
-                    var usuario = context.Usuarios.FirstOrDefault(u => u.Dni == usuarioIngresado);
-
-                    if (usuario != null)
-                    {
-                        if (claveIngresada == usuario.Clave)
-                        {
-                            estadoUsuario = usuario.Activo ? (IUsuarioState)new UsuarioActivoState() : new UsuarioInactivoState();
-
-                            if (estadoUsuario.PuedeIniciarSesion(usuario))
-                            {
-                                var usuarioSesion = UsuarioSesion.ObtenerInstancia();
-                                usuarioSesion.Usuario = usuario.Nombre;
-                                usuarioSesion.Clave = usuario.Clave;
-                                usuarioSesion.Dni = usuario.Dni;
-                                usuarioSesion.Rol = usuario.Rol;
-                                usuarioSesion.Apellido = usuario.Apellido;
-
-                                usuarioSesion.PuedeBorrarSocios = usuario.PuedeBorrarSocios;
-                                usuarioSesion.PuedeModificarSocios = usuario.PuedeModificarSocios;
-                                usuarioSesion.PuedeBorrarLibros = usuario.PuedeBorrarLibros;
-                                usuarioSesion.PuedeModificarLibros = usuario.PuedeModificarLibros;
-                                usuarioSesion.PuedeModificarValorCuota = usuario.PuedeModificarValorCuota;
-                                usuarioSesion.PuedeCobrarCuotas = usuario.PuedeCobrarCuotas;
-                                usuarioSesion.PuedeCambiarReglas = usuario.PuedeCambiarReglas;
-                                usuarioSesion.PuedeVerRegistros = usuario.PuedeVerRegistros;
-                                usuarioSesion.PuedeGestionarUsuarios = usuario.PuedeGestionarUsuarios;
-
-                                ControladoraMultas controladoraMultas = new ControladoraMultas();
-                                controladoraMultas.VerificarYActualizarEstadoSociosMultados();
-
-                                // Registrar auditorÌa de login del usuario normal
-                                controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Sistema", "Login");
-
-                                MostrarFormMenu(controladoraMultas);
-                            }
-                            else
-                            {
-                                MessageBox.Show("El usuario est· inactivo, no puede iniciar sesiÛn.");
-                                textBoxUsuario.Clear();
-                                textBoxContraseÒa.Clear();
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("La contraseÒa es incorrecta.");
-                            textBoxContraseÒa.Clear();
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show("El nombre de usuario no existe.");
-                        textBoxUsuario.Clear();
-                        textBoxContraseÒa.Clear();
-                    }
-                }
-            }
         }
-
-
-
-
-
 
         private void MostrarFormMenu(ControladoraMultas controladoraMultas)
         {
             FormMenu formMenu = new FormMenu(controladoraMultas);
-            formMenu.FormClosed += (s, args) => this.Show(); // Muestra de nuevo el login al cerrar el men˙
+            formMenu.FormClosed += (s, args) => this.Show();
             formMenu.Show();
-            this.Hide(); // Oculta el formulario de login mientras el men˙ est· abierto
+            this.Hide();
         }
-
 
         private void buttonSalir_Click(object sender, EventArgs e)
         {
             var usuarioSesion = UsuarioSesion.ObtenerInstancia();
 
-            // Registrar auditorÌa de logout
-            ControladoraAuditoria controladoraAuditoria = new ControladoraAuditoria();
-            controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Sistema", "Logout");
+            // ‚úÖ Registrar auditor√≠a de logout solo si hab√≠a sesi√≥n activa
+            if (!string.IsNullOrEmpty(usuarioSesion.Usuario))
+            {
+                controladoraAuditoria.Registrar(usuarioSesion.Usuario, "Logout", "Cierre de sesi√≥n del usuario");
+            }
 
-            // Cerrar sesiÛn
             usuarioSesion.CerrarSesion();
-
-            // Cerrar la aplicaciÛn o volver al login
             Application.Exit();
         }
 
-        private void FormLogin_Load(object sender, EventArgs e)
+        private void buttonolvidecontrase√±a_Click(object sender, EventArgs e)
         {
-
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        
-        private void buttonolvidecontraseÒa_Click(object sender, EventArgs e)
-        {
-            // Abre el formulario de cambio de contraseÒa
-            FormCambiarContraseÒa formCambiarContraseÒa = new FormCambiarContraseÒa();
-            formCambiarContraseÒa.FormClosed += (s, args) => this.Show(); // Muestra el login al cerrar el formulario de cambio de contraseÒa
-            formCambiarContraseÒa.Show();
-            // Oculta el formulario de login mientras el de cambio de contraseÒa est· abierto
+            FormCambiarContrase√±a formCambiarContrase√±a = new FormCambiarContrase√±a();
+            formCambiarContrase√±a.FormClosed += (s, args) => this.Show();
+            formCambiarContrase√±a.Show();
         }
     }
 }
