@@ -35,5 +35,55 @@ namespace Vista
         {
             this.Close();
         }
+
+        private void buttonConfirmarBackup_Click(object sender, EventArgs e)
+        {
+            // 1️⃣ Verificar que haya ruta elegida
+            if (string.IsNullOrWhiteSpace(textBoxUbicacionbackUp.Text))
+            {
+                MessageBox.Show("Debe seleccionar una ubicación para guardar el backup.",
+                                "Ruta no seleccionada",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                // 2️⃣ Ruta de tu base de datos actual (la original)
+                string rutaBD = @"C:\Users\javie\DataBase120524.mdf";
+                string rutaLog = @"C:\Users\javie\DataBase120524_log.ldf"; // si existe
+
+                // 3️⃣ Crear nombre del archivo final con fecha/hora
+                string nombreBackup = $"BackupBiblioteca_{DateTime.Now:yyyyMMdd_HHmmss}.mdf";
+                string nombreBackupLog = $"BackupBiblioteca_{DateTime.Now:yyyyMMdd_HHmmss}_log.ldf";
+
+                // 4️⃣ Crear rutas finales
+                string destinoBD = Path.Combine(textBoxUbicacionbackUp.Text, nombreBackup);
+                string destinoLog = Path.Combine(textBoxUbicacionbackUp.Text, nombreBackupLog);
+
+                // 5️⃣ Copiar archivo MDF
+                File.Copy(rutaBD, destinoBD, true);
+
+                // 6️⃣ Copiar archivo LDF (si existe)
+                if (File.Exists(rutaLog))
+                    File.Copy(rutaLog, destinoLog, true);
+
+                // 7️⃣ Mensaje final
+                MessageBox.Show("⚡ Backup realizado con éxito.\n\nUbicación:\n" + textBoxUbicacionbackUp.Text,
+                                "Backup Finalizado",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Information);
+
+                this.Close(); // opcional
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al realizar el backup:\n" + ex.Message,
+                                "Error",
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+            }
+        }
     }
 }
